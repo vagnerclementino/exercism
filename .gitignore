@@ -52,5 +52,5 @@ Mkfile.old
 dkms.conf
 
 #Exercicism
-java/hello-world/.gradle/
-java/hello-world/build/
+*.gradle/
+*build/
