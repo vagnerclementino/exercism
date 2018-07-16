@@ -54,3 +54,4 @@ dkms.conf
 #Exercicism
 *.gradle/
 *build/
+*.solution.json
