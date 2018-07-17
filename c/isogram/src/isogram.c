@@ -1,6 +1,21 @@
 #include "isogram.h"
 #include <stdio.h>
 
+bool is_valid_character(const char c){
+   bool is_valid = false;
+   switch (c) {
+       case '-':
+           is_valid = true;
+           break;
+       case ' ':
+           is_valid = true;
+           break;
+       default:
+           is_valid = false;
+   }
+   return is_valid;
+}
+
 bool is_isogram(const char phrase[]){
 
     /* Variable that define if parameter
@@ -20,7 +35,7 @@ bool is_isogram(const char phrase[]){
             if (i != j ) {
                 if (tolower(phrase[i]) == tolower(phrase[j]))
                 {
-                    if (phrase[i] != '-' && phrase[i] != ' ') {
+                    if (!is_valid_character(phrase[i])) {
                         is_isogram = false;
                         break;
                     }
@@ -28,7 +43,7 @@ bool is_isogram(const char phrase[]){
             }
             j++;
         }
-        /* If a repeating letter is found 
+        /* If a repeating letter is found
          * exit from the loop, otherwise, add one
          * to variable i
          * */
@@ -38,7 +53,6 @@ bool is_isogram(const char phrase[]){
         {
          break;
         }
-
     }
     return is_isogram;
 
