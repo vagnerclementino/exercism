@@ -7,4 +7,6 @@
 
 bool is_isogram(const char phrase[]);
 
+bool is_valid_character(const char c);
+
 #endif
