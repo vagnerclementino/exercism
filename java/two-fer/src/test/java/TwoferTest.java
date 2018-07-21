@@ -13,6 +13,13 @@ public class TwoferTest {
         twofer = new Twofer();
     }
 
+    @Test public void noNameGivenWithEmptyString() {
+        String input = new String(" ");
+        String expected = "One for you, one for me.";
+
+        assertEquals(expected, twofer.twofer(input));
+    }
+
     @Test
     public void noNameGiven() {
         String input = null;

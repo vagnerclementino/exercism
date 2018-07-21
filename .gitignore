@@ -52,6 +52,7 @@ Mkfile.old
 dkms.conf
 
 #Exercicism
+*.solution.json
 *.gradle/
 *build/
 *.solution.json
