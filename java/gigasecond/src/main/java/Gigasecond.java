@@ -5,7 +5,7 @@ import java.time.LocalTime;
 class Gigasecond {
 
     // A gigasecond is 10^9 (1,000,000,000) seconds.
-    private static final double GIGASECONDS = 1e9;
+    private static final long GIGASECONDS = 1_000_000_000;
     private LocalDateTime birthDateTime;
 
     Gigasecond(LocalDate birthDate) {
@@ -19,7 +19,7 @@ class Gigasecond {
     }
 
     LocalDateTime getDate() {
-        return this.birthDateTime.plusSeconds((long) Gigasecond.GIGASECONDS);
+        return this.birthDateTime.plusSeconds(Gigasecond.GIGASECONDS);
     }
 
 }
