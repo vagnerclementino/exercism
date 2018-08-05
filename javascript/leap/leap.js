@@ -1,7 +1,3 @@
-//
-// This is only a SKELETON file for the "Leap" exercise. It's been provided as a
-// convenience to get you started writing code faster.
-//
 
 var Year = function (year) {
     this.value = year;
@@ -9,19 +5,24 @@ var Year = function (year) {
 
 Year.prototype.isLeap = function () {
 
-
-    if(this.value % 400 == 0){
+    if(this.isDivisible(this.value,400)){
         return true;
     }
 
-    if(this.value % 100 == 0){
+    if(this.isDivisible(this.value,100)){
         return false;
     }
-    if(this.value % 4 == 0 ){
+    if(this.isDivisible(this.value,4)){
         return true;
     }
 
     return false;
 };
 
+Year.prototype.isDivisible = function(dividend, divisor){
+  if (divisor == 0) {
+      return false;
+  } 
+  return (dividend % divisor == 0)
+};
 module.exports = Year;
