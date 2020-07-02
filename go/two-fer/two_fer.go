@@ -4,18 +4,23 @@
 // Package twofer should have a package comment that summarizes what it's about.
 // https://golang.org/doc/effective_go.html#commentary
 package twofer
+
 import "fmt"
+
+const DEFAULT_NAME = "you"
+
 // ShareWith should have a comment documenting it.
 func ShareWith(name string) string {
-	var shared string = ""
-	const DEFAULT_NAME = "you"
-	const TEMPLATE_MESSAGE = "One for %s, one for me."
-	if name == "" {
+	return createSharedMessage(name)
+}
 
-		shared = fmt.Sprintf(TEMPLATE_MESSAGE, DEFAULT_NAME)
-		
-	}else {		
-		shared = fmt.Sprintf(TEMPLATE_MESSAGE, name)
+func createSharedMessage(name string) string {
+	if name == "" {
+		return formatSharedMessage(DEFAULT_NAME)
 	}
-	return shared
+	return formatSharedMessage(name)
+}
+
+func formatSharedMessage(value string) string {
+	return fmt.Sprintf("One for %s, one for me.", value)
 }
