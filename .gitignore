@@ -74,3 +74,15 @@ java/matrix/.settings/org.eclipse.buildship.core.prefs
 java/matrix/.vscode/launch.json
 java/matrix/.vscode/launch.test.json
 java/matrix/.vscode/settings.json
+
+#Elixir
+/_build
+/cover
+/deps
+/doc
+/.fetch
+erl_crash.dump
+*.ez
+*.beam
+/config/*.secret.exs
+.elixir_ls/
