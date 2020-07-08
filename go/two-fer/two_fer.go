@@ -16,11 +16,7 @@ func ShareWith(name string) string {
 
 func createSharedMessage(name string) string {
 	if name == "" {
-		return formatSharedMessage(DEFAULT_NAME)
+		name = DEFAULT_NAME
 	}
-	return formatSharedMessage(name)
-}
-
-func formatSharedMessage(value string) string {
-	return fmt.Sprintf("One for %s, one for me.", value)
+	return fmt.Sprintf("One for %s, one for me.", name)
 }
