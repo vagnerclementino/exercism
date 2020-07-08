@@ -11,10 +11,6 @@ const DEFAULT_NAME = "you"
 
 // ShareWith should have a comment documenting it.
 func ShareWith(name string) string {
-	return createSharedMessage(name)
-}
-
-func createSharedMessage(name string) string {
 	if name == "" {
 		name = DEFAULT_NAME
 	}
