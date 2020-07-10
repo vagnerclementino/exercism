@@ -7,12 +7,12 @@ package twofer
 
 import "fmt"
 
-const DEFAULT_NAME = "you"
+const defaultName = "you"
 
 // ShareWith should have a comment documenting it.
 func ShareWith(name string) string {
 	if name == "" {
-		name = DEFAULT_NAME
+		name = defaultName
 	}
 	return fmt.Sprintf("One for %s, one for me.", name)
 }
