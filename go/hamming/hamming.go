@@ -4,8 +4,13 @@ import (
 	"errors"
 )
 
-const errorDNASequenceNotEqual = "The DNA sequences must have equals length"
+const (
+	errorDNASequenceNotEqual             = "The DNA sequences must have equals length"
+	errorChunkSizeZero                   = "The chunk size cannot be zero"
+	errorNumberOfChunksIsGreaterThanText = "The number of chuncks cannot be greater than text do divide"
+)
 
+// Distance ...
 func Distance(a, b string) (int, error) {
 	var numberOfRoutines = 2
 	var distance = 0
@@ -50,4 +55,34 @@ func hammingDistance(a, b string) (int, error) {
 		}
 	}
 	return distance, nil
+}
+
+func divideInChunks(textToDivide string, chunkSize int) ([]string, error) {
+
+	if textToDivide == "" {
+		return []string{}, nil
+	}
+
+	if chunkSize == 0 {
+		return nil, errors.New(errorChunkSizeZero)
+	}
+
+	if textToDivide != "" && chunkSize > len(textToDivide) {
+		return nil, errors.New(errorNumberOfChunksIsGreaterThanText)
+	}
+
+	if len(textToDivide) == chunkSize {
+		return []string{textToDivide}, nil
+	}
+
+	var chunks []string
+	var res string
+	for i, r := range textToDivide {
+		res = res + string(r)
+		if (i+1)%chunkSize == 0 {
+			chunks = append(chunks, res)
+			res = ""
+		}
+	}
+	return chunks, nil
 }

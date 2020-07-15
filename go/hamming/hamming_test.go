@@ -38,3 +38,41 @@ func BenchmarkHamming(b *testing.B) {
 		}
 	}
 }
+
+func TestDivideInChunks(t *testing.T) {
+	for _, tc := range divideInChunksTestCases {
+		got, err := divideInChunks(tc.textToDivide, tc.chunkSize)
+		if tc.expectedError != nil {
+			// check if err is of error type
+			var _ error = err
+
+			// we expect error
+			if err == nil {
+				t.Fatalf(" %q: divideInChunks(%s, %d); expected error, got nil.",
+					tc.title, tc.textToDivide, tc.chunkSize)
+			}
+		} else {
+			// we do not expect error
+			if err != nil {
+				t.Fatalf("%q: divideInChunks(%s, %d) returned unexpected error: %v",
+					tc.title, tc.textToDivide, tc.chunkSize, err)
+			}
+			if !compareChunk(got, tc.expectedChunks) {
+				t.Fatalf("%q : divideInChunks(%s, %d) = %v, want %v.", tc.title,
+					tc.textToDivide, tc.chunkSize, got, tc.expectedChunks)
+			}
+		}
+	}
+}
+
+func compareChunk(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
+}
