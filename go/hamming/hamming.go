@@ -10,25 +10,39 @@ const (
 	errorNumberOfChunksIsGreaterThanText = "The number of chuncks cannot be greater than text do divide"
 )
 
-// Distance ...
+// Distance allows calculate the hamming distance
 func Distance(a, b string) (int, error) {
-	var numberOfRoutines = 2
+	var numberOfRoutines = 3
 	var distance = 0
-	distanceChan := make(chan int)
 
 	if len(a) != len(b) {
 		return 0, errors.New(errorDNASequenceNotEqual)
 	}
+
 	if len(a) == 0 {
 		return 0, nil
 	}
 
-	if len(a) > 2 {
-		go hammingDistanceWithConcurrency(a[:len(a)/2], b[:len(b)/2], distanceChan)
-		go hammingDistanceWithConcurrency(a[len(a)/2:], b[len(b)/2:], distanceChan)
+	if len(a) > numberOfRoutines {
+
+		distanceChan := make(chan int)
+
+		chunksA, err := divideInChunks(a, 2)
+		if err != nil {
+			return 0, err
+		}
+
+		chunksB, err := divideInChunks(b, 2)
+		if err != nil {
+			return 0, err
+		}
+
+		for i := 0; i < numberOfRoutines; i++ {
+			go hammingDistanceWithConcurrency(chunksA[i], chunksB[i], distanceChan)
+		}
+
 		for i := 0; i < numberOfRoutines; i++ {
 			distance += <-distanceChan
-
 		}
 		return distance, nil
 	}
@@ -57,31 +71,29 @@ func hammingDistance(a, b string) (int, error) {
 	return distance, nil
 }
 
-func divideInChunks(textToDivide string, chunkSize int) ([]string, error) {
+func divideInChunks(textToDivide string, numberOfChunks int) ([]string, error) {
+
+	var chunks []string
 
 	if textToDivide == "" {
 		return []string{}, nil
 	}
 
-	if chunkSize == 0 {
+	if numberOfChunks == 0 {
 		return nil, errors.New(errorChunkSizeZero)
 	}
 
-	if textToDivide != "" && chunkSize > len(textToDivide) {
+	if textToDivide != "" && numberOfChunks > len(textToDivide) {
 		return nil, errors.New(errorNumberOfChunksIsGreaterThanText)
 	}
 
-	if len(textToDivide) == chunkSize {
-		return []string{textToDivide}, nil
-	}
+	chunkSize := len(textToDivide) / numberOfChunks
 
-	var chunks []string
-	var res string
-	for i, r := range textToDivide {
-		res = res + string(r)
-		if (i+1)%chunkSize == 0 {
-			chunks = append(chunks, res)
-			res = ""
+	for i := 0; i < len(textToDivide); i += chunkSize {
+		chunks = append(chunks, textToDivide[i:(i+chunkSize)])
+		if len(chunks)+1 == numberOfChunks {
+			chunks = append(chunks, textToDivide[i+chunkSize:])
+			break
 		}
 	}
 	return chunks, nil

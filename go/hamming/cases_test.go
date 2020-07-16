@@ -73,47 +73,63 @@ var testCases = []struct {
 var divideInChunksTestCases = []struct {
 	title          string
 	textToDivide   string
-	chunkSize      int
+	numberOfChunks int
 	expectedChunks []string
 	expectedError  error
 }{
 	{
 		title:          "should returns an empty list if text is empty",
 		textToDivide:   "",
-		chunkSize:      1,
+		numberOfChunks: 1,
 		expectedChunks: []string{},
 		expectedError:  nil,
 	},
 
 	{
-		title:          "should returns an error if chunkSize is zero",
+		title:          "should returns an error if numberOfChunks is zero",
 		textToDivide:   "abc",
-		chunkSize:      0,
+		numberOfChunks: 0,
 		expectedChunks: nil,
 		expectedError:  errors.New("The number of chuncks cannot be zero"),
 	},
 
 	{
-		title:          "should returns an error if chunkSize is greater than text to divide",
+		title:          "should returns an error if numberOfChunks is greater than text to divide",
 		textToDivide:   "a",
-		chunkSize:      2,
+		numberOfChunks: 2,
 		expectedChunks: nil,
 		expectedError:  errors.New("The number of chuncks cannot be greater than text do divide"),
 	},
 
 	{
-		title:          "should returns a list with one item when chunkSize has the same length that textToDivide",
+		title:          "should returns a list with one item when numberOfChunks is one",
 		textToDivide:   "abc",
-		chunkSize:      3,
+		numberOfChunks: 1,
 		expectedChunks: []string{"abc"},
 		expectedError:  nil,
 	},
 
 	{
-		title:          "should returns list with size equals text to divide when chunkSize equals 1",
+		title:          "should returns a list with size equals text to divide when numberOfChunks is equals of length of textToDivide",
 		textToDivide:   "abc",
-		chunkSize:      1,
+		numberOfChunks: 3,
 		expectedChunks: []string{"a", "b", "c"},
+		expectedError:  nil,
+	},
+
+	{
+		title:          "should returns list with chunks with same length when numberOfChunks and textToDivide are multiples",
+		textToDivide:   "abcdef",
+		numberOfChunks: 2,
+		expectedChunks: []string{"abc", "def"},
+		expectedError:  nil,
+	},
+
+	{
+		title:          "should returns list jwith on chunks with equals one when size of text is not multiple",
+		textToDivide:   "abcdefg",
+		numberOfChunks: 2,
+		expectedChunks: []string{"abc", "defg"},
 		expectedError:  nil,
 	},
 }
