@@ -27,12 +27,12 @@ func Distance(a, b string) (int, error) {
 
 		distanceChan := make(chan int)
 
-		chunksA, err := divideInChunks(a, 2)
+		chunksA, err := divideInChunks(a, numberOfRoutines)
 		if err != nil {
 			return 0, err
 		}
 
-		chunksB, err := divideInChunks(b, 2)
+		chunksB, err := divideInChunks(b, numberOfRoutines)
 		if err != nil {
 			return 0, err
 		}
