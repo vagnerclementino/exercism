@@ -1,3 +1,4 @@
+//Package hamming allow calcuate the hamming distance
 package hamming
 
 import (
@@ -6,95 +7,111 @@ import (
 
 const (
 	errorDNASequenceNotEqual             = "The DNA sequences must have equals length"
-	errorChunkSizeZero                   = "The chunk size cannot be zero"
+	errorNumberChunkIsZero               = "The chunk size cannot be zero"
 	errorNumberOfChunksIsGreaterThanText = "The number of chuncks cannot be greater than text do divide"
 )
 
-// Distance allows calculate the hamming distance
+// Distance calculates the hamming distance
 func Distance(a, b string) (int, error) {
-	var numberOfRoutines = 3
-	var distance = 0
+
+	var numberOfRoutines = 2
 
 	if len(a) != len(b) {
 		return 0, errors.New(errorDNASequenceNotEqual)
 	}
-
-	if len(a) == 0 {
-		return 0, nil
-	}
-
 	if len(a) > numberOfRoutines {
-
-		distanceChan := make(chan int)
-
-		chunksA, err := divideInChunks(a, numberOfRoutines)
-		if err != nil {
-			return 0, err
-		}
-
-		chunksB, err := divideInChunks(b, numberOfRoutines)
-		if err != nil {
-			return 0, err
-		}
-
-		for i := 0; i < numberOfRoutines; i++ {
-			go hammingDistanceWithConcurrency(chunksA[i], chunksB[i], distanceChan)
-		}
-
-		for i := 0; i < numberOfRoutines; i++ {
-			distance += <-distanceChan
-		}
-		return distance, nil
+		return calculateDistinctCharWithConcurrency(a, b, numberOfRoutines)
 	}
-	return hammingDistance(a, b)
+	return calculateDistinctChar(a, b)
 }
 
-func hammingDistanceWithConcurrency(a, b string, distanceChan chan int) error {
-	distance, err := hammingDistance(a, b)
-	if err != nil {
-		return err
-	}
-	distanceChan <- distance
-	return nil
-}
+// calculateDistinctChar returns the number of distinct characters between two
+// strings
+func calculateDistinctChar(a, b string) (int, error) {
 
-func hammingDistance(a, b string) (int, error) {
-	var distance = 0
+	var distinctChar = 0
+
 	if len(a) != len(b) {
 		return 0, errors.New(errorDNASequenceNotEqual)
 	}
 	for i := 0; i < len(a); i++ {
 		if a[i] != b[i] {
-			distance++
+			distinctChar++
 		}
 	}
-	return distance, nil
+	return distinctChar, nil
 }
 
+// calculate the hamming in a concurrency way
+func calculateDistinctCharWithConcurrency(a, b string, numberOfRoutines int) (int, error) {
+
+	var distinctChar = 0
+
+	distanceChan := make(chan int)
+
+	chunksFromA, err := divideInChunks(a, numberOfRoutines)
+	if err != nil {
+		return 0, err
+	}
+
+	chunksFromB, err := divideInChunks(b, numberOfRoutines)
+	if err != nil {
+		return 0, err
+	}
+
+	for i := 0; i < numberOfRoutines; i++ {
+		go calculateDistinctCharByChan(chunksFromA[i], chunksFromB[i], distanceChan)
+	}
+
+	for i := 0; i < numberOfRoutines; i++ {
+		distinctChar += <-distanceChan
+	}
+	return distinctChar, nil
+}
+
+// Calculate number of distinct char using a channel
+func calculateDistinctCharByChan(a, b string, distanceChan chan int) error {
+
+	distance, err := calculateDistinctChar(a, b)
+	if err == nil {
+		distanceChan <- distance
+	}
+	return err
+
+}
+
+// divide a text in a list of string (chunk) with size equal the
+// numberOfChunks. Ex divideInChunks("ab", 2) = ["a", "b"]
 func divideInChunks(textToDivide string, numberOfChunks int) ([]string, error) {
 
 	var chunks []string
 
-	if textToDivide == "" {
-		return []string{}, nil
-	}
+	if textToDivide != "" {
 
-	if numberOfChunks == 0 {
-		return nil, errors.New(errorChunkSizeZero)
-	}
+		if err := validateDivideInChunks(textToDivide, numberOfChunks); err != nil {
+			return nil, err
+		}
+		chunkSize := len(textToDivide) / numberOfChunks
 
-	if textToDivide != "" && numberOfChunks > len(textToDivide) {
-		return nil, errors.New(errorNumberOfChunksIsGreaterThanText)
-	}
-
-	chunkSize := len(textToDivide) / numberOfChunks
-
-	for i := 0; i < len(textToDivide); i += chunkSize {
-		chunks = append(chunks, textToDivide[i:(i+chunkSize)])
-		if len(chunks)+1 == numberOfChunks {
-			chunks = append(chunks, textToDivide[i+chunkSize:])
-			break
+		for i := 0; i < len(textToDivide); i += chunkSize {
+			chunks = append(chunks, textToDivide[i:(i+chunkSize)])
+			if len(chunks)+1 == numberOfChunks {
+				chunks = append(chunks, textToDivide[i+chunkSize:])
+				break
+			}
 		}
 	}
 	return chunks, nil
+}
+
+func validateDivideInChunks(textToDivide string, numberOfChunks int) error {
+
+	if numberOfChunks == 0 {
+		return errors.New(errorNumberChunkIsZero)
+	}
+
+	if textToDivide != "" && numberOfChunks > len(textToDivide) {
+		return errors.New(errorNumberOfChunksIsGreaterThanText)
+	}
+	return nil
 }
