@@ -10,16 +10,19 @@ const errorDNASequenceNotEqual = "The DNA sequences must have equals length"
 // Distance calculates the hamming distance
 func Distance(a, b string) (int, error) {
 
-	if len(a) != len(b) {
+	ar, br := []rune(a), []rune(b)
+
+	if len(ar) != len(br) {
 		return 0, errors.New(errorDNASequenceNotEqual)
 	}
 
 	var distance = 0
-	for i := 0; i < len(a); i++ {
-		if a[i] != b[i] {
+	for i := range ar {
+		if ar[i] != br[i] {
 			distance++
 		}
 	}
 
 	return distance, nil
+
 }
