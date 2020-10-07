@@ -1,25 +1,41 @@
 package raindrops
 
-import "fmt"
+import (
+	"strconv"
+)
 
-var factors = [...]int{3, 5, 7}
-var results = map[int]string{
-	3: "Pling",
-	5: "Plang",
-	7: "Plong",
+// Raindrop is type calculate raindrop problem
+type Raindrop struct {
+	Factor  int
+	Message string
+}
+
+var raindrops = [...]Raindrop{
+	{
+		Factor:  3,
+		Message: "Pling",
+	},
+	{
+		Factor:  5,
+		Message: "Plang",
+	},
+	{
+		Factor:  7,
+		Message: "Plong",
+	},
 }
 
 // Convert a number into a string that contains raindrop sounds corresponding
 // to certain potential factors
 func Convert(input int) string {
 	var result string
-	for _, factor := range factors {
-		if input%factor == 0 {
-			result = result + results[factor]
+	for _, r := range raindrops {
+		if input%r.Factor == 0 {
+			result += r.Message
 		}
 	}
 	if result == "" {
-		result = fmt.Sprintf("%d", input)
+		result = strconv.Itoa(input)
 	}
 	return result
 }
