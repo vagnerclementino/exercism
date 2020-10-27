@@ -1,8 +1,6 @@
 package scrabble
 
-import (
-	"strings"
-)
+import "strings"
 
 var scrabbleMap = map[int32]int{
 	'A': 1,
@@ -35,7 +33,7 @@ var scrabbleMap = map[int32]int{
 
 // Score computes the Scrabble score for that word.
 func Score(word string) int {
-	score := 0
+	var score int
 	for _, char := range strings.ToUpper(word) {
 		score += scrabbleMap[char]
 	}
