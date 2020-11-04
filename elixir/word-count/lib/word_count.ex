@@ -13,7 +13,7 @@ defmodule WordCount do
     end)
   end
 
-  def normalize(sentence) do
+  defp normalize(sentence) when is_bitstring(sentence) do
     String.replace(sentence, "_", " ")
     |> String.replace([",", ":", "!", "&", "@", "$", "%", "^"], "")
     |> String.downcase()
